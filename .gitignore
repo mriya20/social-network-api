@@ -1,3 +1,6 @@
-package-lock.json
+.DS_Store
 node_modules
-INSTRUCTIONS
+.env
+package-lock.json
+instructions
+IGNORE
