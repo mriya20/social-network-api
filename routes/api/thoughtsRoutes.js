@@ -13,13 +13,10 @@ const {
 // GET - will retrieve all thoughts WORKING
 // POST - will create a thought use this structure WORKING
 // {
-//   "thoughtText": "Here's where the thought body goes",
-//   "username": "Ada Ada",
-//   "userId": "63c8bc4dd6859eb314699f96"
-// }
 
+// GET all thoughts / POST a new thought
 router.route('/')
-  .get(getThoughts) 
+  .get(getThoughts)
   .post(createThought);
 
 // http://localhost:3001/api/thoughts/:thoughtId
@@ -36,7 +33,7 @@ router
   .route('/:thoughtId')
   .get(getSingleThought)
   .put(updateThought)
-  .delete(deleteThought);
+  .delete(deleteThought);// DELTE to remove a thought by its `_id`.
 
 // http://localhost:3001/api/thoughts/:thoughtId/reactions
 // POST - will add a reaction to a thought WORKING
@@ -48,8 +45,8 @@ router
 router
   .route('/:thoughtId/reactions')
   .post(addReaction)
-// router
-//   .route('/:thoughtId/reactions/reactionId')
+  // router
+  //   .route('/:thoughtId/reactions/reactionId')
   .delete(removeReaction)
 
 module.exports = router;

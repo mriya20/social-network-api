@@ -4,9 +4,10 @@ const { Schema, model } = require('mongoose');
 // Schema to create User model
 const userSchema = new Schema(
   {
+    // Add indvidual properties and their types
     username: {
       type: String,
-      unique: true,
+      unique: true, // unique index
       required: true,
       trim: true,
     },
@@ -27,6 +28,7 @@ const userSchema = new Schema(
     }],
   },
   {
+    // Schema option to transform Objects after querying th e default behavior
     toJSON: {
       virtuals: true,
     },
@@ -39,7 +41,7 @@ userSchema.virtual("friendCount").get(function () {
   return this.friends.length;
 });
 
-
+// Initializes the User model
 const User = model('User', userSchema);
 
 module.exports = User;

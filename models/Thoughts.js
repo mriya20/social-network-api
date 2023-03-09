@@ -1,7 +1,7 @@
 const { Schema, model, Types } = require('mongoose');
 const moment = require('moment');
 
-
+// Schema to create Thoughts model
 const reactionSchema = new Schema(
   {
     reactionId: {
@@ -22,6 +22,10 @@ const reactionSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
+      get: function (timestamp) {
+        return timestamp.toLocaleString(); // format the timestamp using the toLocaleString method.
+        // returns a string representation of a date and time that is formatted according to the locale settings of the user's computer.
+      }
     },
   },
   {
@@ -33,20 +37,6 @@ const reactionSchema = new Schema(
 );
 
 
-
-  //   createdAt: {
-  //     // Set default value to the current timestamp using moment
-  //     type: Date,
-  //     default: Date.now,
-  //     get: createdAt => moment(createdAt).format('MMM DD, YYYY [at] hh:mm a')
-  //   }
-  // },
-
-// {
-//     "thoughtText": "Here's where the thought body goes",
-//     "username": "peter",
-//     "userId": " "
-// }
 const thoughtSchema = new Schema(
   {
     thoughtText: {
@@ -57,21 +47,25 @@ const thoughtSchema = new Schema(
     },
     createdAt: {
       type: Date,
-      default: Date.now,  
+      default: Date.now,
+      get: function (timestamp) {
+        return timestamp.toLocaleString(); // format the timestamp using the toLocaleString method.
+        // returns a string representation of a date and time that is formatted according to the locale settings of the user's computer.
+      }
 
     },
-    username : {
+    username: {
       type: String,
       required: true,
     },
-    reactions : {
+    reactions: {
       type: Date,
-   
-    },
 
-  reactions: [reactionSchema]
     },
-    {
+    // Array of nested documents created with the `reactionSchema`.
+    reactions: [reactionSchema]
+  },
+  {
     toJSON: {
       virtuals: true,
       getters: true,
@@ -80,15 +74,24 @@ const thoughtSchema = new Schema(
   }
 );
 
-thoughtSchema.path('createdAt').get(function (createdAt){
-  // return createdAt.toLocaleString();
-  return moment(createdAt).format('MMM DD, YYYY [at] hh:mm a')
-})
+// Creates a virtual property `reactionCount` that retrieves the length of the thought's `reactions` array field on query.
+thoughtSchema
+  .virtual('reactionCount')
+  // Getter
+  .get(function () {
+    return this.reactions.length;
+  });
 
-thoughtSchema.virtual("reactionCount").get(function () {
-  return this.reactions.length;
-});
+// thoughtSchema.path('createdAt').get(function (createdAt) {
+//   // return createdAt.toLocaleString();
+//   return moment(createdAt).format('MMM DD, YYYY [at] hh:mm a')
+// })
 
+// thoughtSchema.virtual("reactionCount").get(function () {
+//   return this.reactions.length;
+// });
+
+// Initialize our Thought model.
 const Thought = model('Thought', thoughtSchema);
 
 module.exports = Thought;
