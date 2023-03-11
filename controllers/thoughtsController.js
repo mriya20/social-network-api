@@ -1,5 +1,5 @@
 // these are different ways to write fucntion using if statements - compare with userController
-const { Thoughts, User} = require('../models');
+const { Thoughts, User } = require('../models');
 
 module.exports = {
     //  getThoughts,
@@ -40,12 +40,13 @@ module.exports = {
     //  DELETE http://localhost:3001/api/thoughts/:thoughtId
     deleteThought(req, res) {
         Thoughts.findOneAndDelete({ _id: req.params.thoughtId })
-        .then((thoughts) =>
-        !thoughts
-          ?  res.status(404).json({ message: 'No thought with this id!' })
-           : res.json({ message: 'Thought deleted!' })
-        )
-            .catch((err) => res.status(500).json(err))},
+            .then((thoughts) =>
+                !thoughts
+                    ? res.status(404).json({ message: 'No thought with this id!' })
+                    : res.json({ message: 'Thought deleted!' })
+            )
+            .catch((err) => res.status(500).json(err))
+    },
 
 
     // updateThought,
@@ -55,7 +56,7 @@ module.exports = {
             { _id: req.params.thoughtId },
             { $set: req.body },
             { runValidators: true, new: true }
-                // .populate({ path: objectId.reactions })
+            // .populate({ path: objectId.reactions })
         )
             .then((thoughts) =>
                 !thoughts
@@ -90,7 +91,7 @@ module.exports = {
     removeReaction(req, res) {
         Thoughts.findOneAndUpdate(
             { _id: req.params.thoughtId },
-            { $pull: { reactions: req.body } },
+            { $pull: { reactions: { _id: req.body.id } } },
             { new: true }
         )
             .then((thoughtsData) => {
@@ -103,3 +104,5 @@ module.exports = {
             .catch((err) => res.status(400).json(err));
     },
 };
+
+

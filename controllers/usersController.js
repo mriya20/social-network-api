@@ -9,7 +9,7 @@ module.exports = {
       .catch((err) => res.status(500).json(err))
   },
 
-    // createUser,
+  // createUser,
   // POST http://localhost:3001/api/users
   createUser(req, res) {
     User.create(req.body)
@@ -22,9 +22,9 @@ module.exports = {
   getSingleUser(req, res) {
     // console.log(req.params.id);
     User.findOne({ _id: req.params.id })
-      .select('-__v')
-      .populate('friends')
-      .populate('thoughts')
+      // .select('-__v')
+      // .populate('friends')
+      // .populate('thoughts')
       .then((usersData) => {
 
         if (!usersData) {
@@ -40,32 +40,32 @@ module.exports = {
       });
   },
 
-    // Delete a user
+  // Delete a user
   // DELETE http://localhost:3001/api/users/:userId
   deleteUser(req, res) {
     console.log(req.params.id);
-User.findOneAndDelete({ _id: req.params.id })
+    User.findOneAndDelete({ _id: req.params.id })
 
-  .then(usersData => {
-    if (!usersData) {
-      res.status(404).json({
-        message: 'User deleted',
+      .then(usersData => {
+        if (!usersData) {
+          res.status(404).json({
+            message: 'User deleted',
+          })
+        }
       })
-    }
-  })
-  .then(() => res.json({
-    message: "User successfully deleted"
-  })
-  )
-  .catch((err) => {
-    console.log(err);
-    res.status(500).json(err);
-  });
-},
+      .then(() => res.json({
+        message: "User successfully deleted"
+      })
+      )
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  },
 
   // Update a user by their ID
   // PUT http://localhost:3001/api/users/:userId
-  updateUser( req, res) {
+  updateUser(req, res) {
     User.findOneAndUpdate({ _id: req.params.id }, req.body)
       .then((userData) => {
         if (!userData) {
@@ -78,14 +78,15 @@ User.findOneAndDelete({ _id: req.params.id })
       })
       .catch((err) => res.status(400).json(err));
 
-    },
+  },
 
   // addFriend,
   // POST http://localhost:3001/api/users/:userId/friends
   addFriend(req, res) {
     User.findOneAndUpdate(
-      { _id: req.params.id },
-      req.body,
+      { _id: req.params.id }, {
+      $push: { friends: req.params.friendsId }
+    },
       { runValidators: true, new: true })
       .then(user => {
         if (!user) {
@@ -93,22 +94,23 @@ User.findOneAndDelete({ _id: req.params.id })
             message: "User not found"
           })
         }
+        res.json({
+          message: "Friend added to the user"
+        })
       })
-      res.json({
-        message: "Friend added to the user"
-      })
+
       .catch((err) => res.status(400).json(err));
 
   },
 
-// removeFriend,
-// DELETE http://localhost:3001/api/users/:usersId/friends/:friendsId
-removeFriend(req, res) {
-  User.findByIdAndUpdate(
-    { _id: req.params.id},
-      {$pull: { friends: req.params.friendsId }, },       
+  // removeFriend,
+  // DELETE http://localhost:3001/api/users/:usersId/friends/:friendsId
+  removeFriend(req, res) {
+    User.findByIdAndUpdate(
+      { _id: req.params.id },
+      { $pull: { friends: req.params.friendsId }, },
       { new: true, runValidators: true })
-  
+
       .then((usersFriend) => {
         if (!usersFriend) {
           res.status(404).json({ message: "No friend found with this id!" });
